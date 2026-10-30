@@ -5,6 +5,9 @@
   import Scoreboard from "./routes/Scoreboard.svelte";
   import Scoreboard2 from "./routes/Scoreboard2.svelte";
   import Draft2 from "./routes/Draft2.svelte";
+  import Leaderboard from "./routes/Leaderboard.svelte";
+  import Alerts from "./routes/Alerts.svelte";
+  import Cue from "./routes/Cue.svelte";
 
   let routes = {
     "/": Index,
@@ -12,6 +15,9 @@
     "/scoreboard": Scoreboard,
     "/scoreboard2": Scoreboard2,
     "/draft2": Draft2,
+    "/leaderboard": Leaderboard,
+    "/alerts": Alerts,
+    "/cue": Cue,
   };
 </script>
 

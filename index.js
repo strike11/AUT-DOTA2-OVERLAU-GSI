@@ -4,13 +4,22 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http, {
     cors: {
-        origin: "http://localhost:8080",
+        origin: true,
         methods: ["GET", "POST"]
     }
 });
 var d2gsi = require('dota2-gsi');
 var path = require('path');
 const { log } = require('console');
+
+process.on("uncaughtException", (err) => {
+    if (err && err.code === "EADDRINUSE" && String(err.port) === "3000") {
+        console.error("Dota GSI port 3000 is already in use. Alert cues still listen on 3001.");
+        return;
+    }
+    console.error(err);
+    process.exit(1);
+});
 
 var server = new d2gsi({
     port: 3000,
@@ -19,6 +28,24 @@ var server = new d2gsi({
 
 app.use(cors()); // Use cors middleware
 app.use(express.static(path.join(__dirname, 'svelte-app/public'))); // Serve static files from Svelte app
+
+io.on("connection", (socket) => {
+    socket.on("alert-cue", (cue) => {
+        if (!cue || typeof cue !== "object") return;
+        const title = String(cue.title || "").trim().slice(0, 32);
+        if (!title) return;
+        const team = cue.team === "radiant" || cue.team === "dire" ? cue.team : null;
+        io.emit("alert-cue", {
+            id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+            kind: String(cue.kind || "rune").slice(0, 24),
+            title,
+            subtitle: String(cue.subtitle || "").trim().slice(0, 40),
+            detail: String(cue.detail || "").trim().slice(0, 40),
+            team,
+            hero: String(cue.hero || "").toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 40),
+        });
+    });
+});
 
 
 

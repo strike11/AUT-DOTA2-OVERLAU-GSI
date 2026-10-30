@@ -11,7 +11,31 @@
     <div
       class="bg-slate-700 w-80 p-4 m-4 text-white text-font hover:scale-105 transition ease-in-out hover:bg-slate-800"
     >
-      SCOREBOARD (EXPERIMENTAL)
+      SCOREBOARD
+    </div>
+  </a>
+  <br />
+  <a href="#/cue" class="no-underline">
+    <div
+      class="bg-slate-700 w-80 p-4 m-4 text-white text-font hover:scale-105 transition ease-in-out hover:bg-slate-800"
+    >
+      ALERT CUE
+    </div>
+  </a>
+  <br />
+  <a href="#/alerts" class="no-underline">
+    <div
+      class="bg-slate-700 w-80 p-4 m-4 text-white text-font hover:scale-105 transition ease-in-out hover:bg-slate-800"
+    >
+      ALERTS
+    </div>
+  </a>
+  <br />
+  <a href="#/leaderboard" class="no-underline">
+    <div
+      class="bg-slate-700 w-80 p-4 m-4 text-white text-font hover:scale-105 transition ease-in-out hover:bg-slate-800"
+    >
+      LEADERBOARD
     </div>
   </a>
 </div>

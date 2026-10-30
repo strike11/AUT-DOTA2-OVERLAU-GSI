@@ -1,116 +1,153 @@
 <script>
-  export let hero_name;
+  export let hero = null;
+  export let active = false;
+
+  $: label = hero ? hero.replace(/_/g, " ") : "";
 </script>
 
-{#if hero_name == "banning" && hero_name != "none"}
-  <div class="relative w-full h-full bg-red-600 animate-fade-in">
-    <div
-      class="banning-inner-shadow absolute inset-0 bg-red-600 opacity-60"
-    ></div>
-    <img
-      class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-[80%] h-[28px] pulse"
-      src="assets/cross.png"
-      alt="assets/cross.png"
-      onerror="this.style.display='none'"
-    />
-    <p
-      class="banning-font tracking-[.25em] absolute bottom-0 left-1/2 transform -translate-x-1/2 text-center mb-[4px] text-white text-[10px] font-bold pulse"
-    >
-      BANNING
-    </p>
-  </div>
-{/if}
-{#if hero_name == "none" && hero_name != "banning"}
-  <div class="relative w-full h-full bg-red-600 animate-fade-in">
-    <img
-      class="h-[55px] w-full grayscale"
-      src="portraits/black_image.png"
-      alt=""
-    />
-    <div class="absolute inset-0 bg-red-950 opacity-60"></div>
-  </div>
-{/if}
-
-{#if hero_name != "none" && hero_name != "banning"}
-  <div class=" relative w-full h-full bg-red-600">
-    <img
-      class="  h-[55px] w-full grayscale contrast-125 animate-fade-in"
-      src="portraits/{hero_name}.png"
-      alt=""
-    />
-    <div class="slash"></div>
-    <div class="inner-shadow absolute inset-0 bg-red-600 opacity-30"></div>
-  </div>
-{/if}
+<div class="ban" class:active class:locked={!!hero} class:empty={!hero && !active}>
+  {#if hero}
+    {#key hero}
+      <img class="portrait" src="portraits/{hero}.png" alt={label} />
+      <img class="mark" src="assets/uni/ban-x.png" alt="" />
+    {/key}
+  {:else if active}
+    <div class="live"></div>
+    <img class="mark ghost" src="assets/uni/ban-x.png" alt="" />
+    <span class="tag">BAN</span>
+  {:else}
+    <img class="ghost-shield" src="assets/uni/shield.png" alt="" />
+  {/if}
+</div>
 
 <style>
-  .inner-shadow {
-    box-shadow: inset 0 0 24px 10px #000000;
-  }
-  .banning-inner-shadow {
-    box-shadow: inset 0 0 24px 10px #000000;
+  .ban {
+    position: relative;
+    height: 54px;
+    overflow: hidden;
+    background:
+      linear-gradient(#120816, #120816) padding-box,
+      linear-gradient(90deg, #ff4ad8, #7a5cff, #3de4ff) border-box;
+    border: 2px solid transparent;
+    box-shadow: inset 0 0 10px #000, 0 0 0 1px #0a0412;
   }
 
-  .slash::before {
-    content: "";
+  .portrait {
     position: absolute;
-    top: -28px;
-    right: 48px;
-
-    height: 110px;
-    width: 4px;
-    background: red;
-    transform: rotate(65deg);
-    animation: slash-animation 5s forwards;
+    left: 50%;
+    top: 50%;
+    height: 100% !important;
+    width: auto !important;
+    max-width: none !important;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    object-position: center 30%;
+    display: block;
+    filter: grayscale(1) brightness(0.55) sepia(0.45) hue-rotate(250deg) saturate(2.2);
+    animation: pop 0.35s steps(4, end) both;
   }
 
-  @keyframes slash-animation {
+  .mark {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 62%;
+    height: 78%;
+    transform: translate(-50%, -50%);
+    object-fit: contain;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 0 4px #ff4ad8);
+    animation: slam 0.38s steps(4, end) both;
+    pointer-events: none;
+  }
+
+  .mark.ghost {
+    width: 46%;
+    opacity: 0.9;
+    animation: pulse 0.8s steps(2, end) infinite;
+  }
+
+  .live {
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        -45deg,
+        rgba(255, 74, 216, 0.18) 0 4px,
+        rgba(18, 4, 24, 0.2) 4px 8px
+      ),
+      #2a0828;
+    animation: stripes 0.6s linear infinite;
+  }
+
+  .tag {
+    position: absolute;
+    left: 50%;
+    bottom: 3px;
+    transform: translateX(-50%);
+    font-family: "PressStart", monospace;
+    font-size: 7px;
+    color: #fff;
+    text-shadow: 0 0 6px #ff4ad8;
+    z-index: 2;
+  }
+
+  .ghost-shield {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    height: 70%;
+    transform: translate(-50%, -50%);
+    opacity: 0.22;
+    image-rendering: pixelated;
+  }
+
+  .active {
+    box-shadow: inset 0 0 12px #ff4ad8, 0 0 10px rgba(255, 74, 216, 0.75);
+  }
+
+  @keyframes slam {
     0% {
+      transform: translate(-50%, -50%) scale(1.7);
       opacity: 0;
-      transform: rotate(65deg);
     }
-    50% {
+    70% {
+      transform: translate(-50%, -50%) scale(0.92);
       opacity: 1;
-      transform: rotate(65deg);
     }
     100% {
-      opacity: 0;
-      transform: rotate(65deg);
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
     }
   }
 
-  /* Define the pulse animation */
+  @keyframes pop {
+    0% {
+      filter: grayscale(1) brightness(2.4);
+    }
+    100% {
+      filter: grayscale(1) brightness(0.55) sepia(0.45) hue-rotate(250deg) saturate(2.2);
+    }
+  }
+
   @keyframes pulse {
-    0% {
-      opacity: 0.5;
+    0%,
+    100% {
+      opacity: 0.45;
+      transform: translate(-50%, -50%) scale(0.92);
     }
     50% {
       opacity: 1;
-    }
-    100% {
-      opacity: 0.5;
+      transform: translate(-50%, -50%) scale(1);
     }
   }
 
-  @keyframes fadeIn {
-    0% {
-      opacity: 1;
+  @keyframes stripes {
+    from {
+      background-position: 0 0;
     }
-    100% {
-      opacity: 0;
+    to {
+      background-position: 16px 0;
     }
-  }
-
-  .animate-fade-in {
-    animation: fadeIn 0.2s ease-in;
-  }
-
-  /* Apply the pulse animation to elements with the pulse class */
-  .pulse {
-    animation: pulse 2s infinite;
-  }
-
-  .banning-font {
-    font-family: "Radiance_regular", sans-serif;
   }
 </style>

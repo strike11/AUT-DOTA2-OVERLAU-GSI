@@ -1,0 +1,14 @@
+{
+  "title": "AUT CUP",
+  "subtitle": "GROUP STAGE",
+  "teams": [
+    { "tag": "AUT", "name": "AUT PRIME", "w": 6, "l": 0, "form": ["W", "W", "W", "W", "W"] },
+    { "tag": "NXS", "name": "NEXUS", "w": 5, "l": 1, "form": ["W", "W", "L", "W", "W"] },
+    { "tag": "PNK", "name": "PINK NOISE", "w": 4, "l": 2, "form": ["W", "L", "W", "W", "L"] },
+    { "tag": "CYN", "name": "CYAN WARD", "w": 4, "l": 2, "form": ["L", "W", "W", "W", "L"] },
+    { "tag": "PIX", "name": "PIXEL FORGE", "w": 3, "l": 3, "form": ["W", "L", "W", "L", "W"] },
+    { "tag": "ARC", "name": "NEON ARCH", "w": 2, "l": 4, "form": ["L", "L", "W", "L", "W"] },
+    { "tag": "GLT", "name": "GLITCH LAB", "w": 1, "l": 5, "form": ["L", "W", "L", "L", "L"] },
+    { "tag": "SHD", "name": "SHIELD UNIT", "w": 0, "l": 6, "form": ["L", "L", "L", "L", "L"] }
+  ]
+}
