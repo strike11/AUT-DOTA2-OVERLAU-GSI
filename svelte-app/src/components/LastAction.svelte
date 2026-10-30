@@ -1,4 +1,6 @@
 <script>
+  import { portraitSrc, videoSrc } from "../lib/heroes.js";
+
   export let hero = "";
   export let nick = "";
   export let team = "radiant";
@@ -7,10 +9,16 @@
   export let box = { x: 0, y: 0, w: 300, h: 300, dx: 0, dy: 0, s: 1 };
 
   let failed = false;
+  let videoReady = false;
 
   $: label = hero ? hero.replace(/_/g, " ") : "";
-  $: if (hero) failed = false;
+  $: if (hero) {
+    failed = false;
+    videoReady = false;
+  }
   $: stamp = kind === "ban" ? "BAN" : "PICK";
+  $: photo = kind === "ban" && !failed;
+  $: showVideo = kind === "pick" && phase === "down" && !failed;
 
   const sparks = [0, 1, 2, 3, 4, 5];
 </script>
@@ -32,12 +40,35 @@
 >
   <div class="window">
     {#key hero}
-      {#if !failed}
-        <video class="hero video" autoplay muted loop playsinline on:error={() => (failed = true)}>
-          <source src="videos/npc_dota_hero_{hero}.webm" type="video/webm" />
-        </video>
+      {#if kind === "pick"}
+        <img
+          class="hero still"
+          class:gone={videoReady}
+          src="icons/{hero}.png"
+          alt={nick || label}
+        />
+        {#if showVideo}
+          <video
+            class="hero clip"
+            autoplay
+            muted
+            loop
+            playsinline
+            on:loadeddata={() => (videoReady = true)}
+            on:error={() => (failed = true)}
+          >
+            <source src={videoSrc(hero)} type="video/webm" />
+          </video>
+        {/if}
+      {:else}
+        <img
+          class="hero still"
+          class:photo
+          src={photo ? portraitSrc(hero) : `icons/${hero}.png`}
+          alt={nick || label}
+          on:error={() => (failed = true)}
+        />
       {/if}
-      <img class="hero still" src="portraits/{hero}.png" alt={nick || label} />
     {/key}
     <div class="scan"></div>
     <div class="flash"></div>
@@ -108,21 +139,39 @@
     width: 100% !important;
     height: 100% !important;
     max-width: none !important;
-    object-fit: cover;
-    object-position: center 16%;
+    object-fit: contain !important;
+    object-position: center center;
+    image-rendering: pixelated;
+    padding: 10%;
+    box-sizing: border-box;
     display: block;
   }
 
   .hero.still {
-    z-index: 0;
+    z-index: 1;
   }
 
-  video.hero {
+  .hero.still.gone {
+    opacity: 0;
+  }
+
+  .hero.clip {
     z-index: 1;
+    object-fit: cover !important;
+    object-position: center 12%;
+    image-rendering: auto;
+    padding: 0;
   }
 
   .ban .hero {
     filter: grayscale(1) brightness(0.62) sepia(0.5) hue-rotate(250deg) saturate(2.4);
+  }
+
+  .ban .hero.photo {
+    object-fit: cover !important;
+    object-position: center 16%;
+    image-rendering: auto;
+    padding: 0;
   }
 
   .scan {

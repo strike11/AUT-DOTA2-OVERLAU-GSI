@@ -1,14 +1,25 @@
 <script>
+  import { portraitSrc } from "../lib/heroes.js";
+
   export let hero = null;
   export let active = false;
 
+  let failed = false;
+
   $: label = hero ? hero.replace(/_/g, " ") : "";
+  $: if (hero) failed = false;
 </script>
 
 <div class="ban" class:active class:locked={!!hero} class:empty={!hero && !active}>
   {#if hero}
     {#key hero}
-      <img class="portrait" src="portraits/{hero}.png" alt={label} />
+      <img
+        class="portrait"
+        class:pixel={failed}
+        src={failed ? `icons/${hero}.png` : portraitSrc(hero)}
+        alt={label}
+        on:error={() => (failed = true)}
+      />
       <img class="mark" src="assets/uni/ban-x.png" alt="" />
     {/key}
   {:else if active}
@@ -45,6 +56,14 @@
     display: block;
     filter: grayscale(1) brightness(0.55) sepia(0.45) hue-rotate(250deg) saturate(2.2);
     animation: pop 0.35s steps(4, end) both;
+  }
+
+  .portrait.pixel {
+    width: 86% !important;
+    height: 86% !important;
+    object-fit: contain !important;
+    object-position: center center;
+    image-rendering: pixelated;
   }
 
   .mark {

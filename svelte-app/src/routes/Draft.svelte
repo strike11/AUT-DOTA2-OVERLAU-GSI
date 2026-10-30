@@ -262,7 +262,7 @@
   }
 
   function placeAbove(ev) {
-    const size = ev.kind === "pick" ? 430 : 360;
+    const size = ev.kind === "pick" ? 500 : 360;
     const row = measure(`picks-${ev.team}`);
     const slot = measure(slotKey(ev.kind, ev.team, ev.index));
     const anchor = slot || row;
@@ -271,7 +271,9 @@
     if (row) x = Math.max(row.x, Math.min(row.x + row.w - size, x));
     x = Math.max(16, Math.min(1920 - size - 16, x));
     const headerTop = row ? row.y - 36 : 820;
-    const y = Math.max(24, headerTop - size - 12);
+    const y = ev.kind === "pick"
+      ? Math.min(48, Math.max(36, headerTop - size - 28))
+      : Math.max(24, headerTop - size - 12);
     return { x, y, w: size, h: size, dx: 0, dy: 0, s: 1 };
   }
 

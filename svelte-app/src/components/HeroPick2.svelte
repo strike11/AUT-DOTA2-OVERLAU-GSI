@@ -1,4 +1,6 @@
 <script>
+  import { videoSrc } from "../lib/heroes.js";
+
   export let hero = null;
   export let nick = "";
   export let active = false;
@@ -15,17 +17,18 @@
   <div class="window">
     {#if hero}
       {#key hero}
-        <img class="hero" src="portraits/{hero}.png" alt={nick || label} />
-        {#if !failed}
+        {#if failed}
+          <img class="hero pixel" src="icons/{hero}.png" alt={nick || label} />
+        {:else}
           <video
-            class="hero video"
+            class="hero"
             autoplay
             muted
             loop
             playsinline
             on:error={() => (failed = true)}
           >
-            <source src="videos/npc_dota_hero_{hero}.webm" type="video/webm" />
+            <source src={videoSrc(hero)} type="video/webm" />
           </video>
         {/if}
         <div class="pixel-grid"></div>
@@ -98,6 +101,15 @@
     object-position: center center;
     display: block;
     animation: reveal 0.55s steps(7, end) both;
+  }
+
+  .hero.pixel {
+    top: 42%;
+    width: 72% !important;
+    height: 72% !important;
+    transform: translate(-50%, -50%);
+    object-fit: contain !important;
+    image-rendering: pixelated;
   }
 
   .pixel-grid {

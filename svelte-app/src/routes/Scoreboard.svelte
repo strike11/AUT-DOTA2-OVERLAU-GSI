@@ -388,7 +388,7 @@
             <article class="row" class:dead={!player.alive}>
               <div class="portrait" style="--slot:{RADIANT_COLORS[index]}">
                 <img
-                  src="portraits/{player.hero}.png"
+                  src="icons/{player.hero}.png"
                   alt={heroLabel(player.hero)}
                   on:error={hideBroken}
                 />
@@ -429,7 +429,7 @@
             <article class="row dire-row" class:dead={!player.alive}>
               <div class="portrait" style="--slot:{DIRE_COLORS[index]}">
                 <img
-                  src="portraits/{player.hero}.png"
+                  src="icons/{player.hero}.png"
                   alt={heroLabel(player.hero)}
                   on:error={hideBroken}
                 />
@@ -783,8 +783,11 @@
   .portrait img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    object-position: center 18%;
+    object-fit: contain;
+    object-position: center center;
+    image-rendering: pixelated;
+    padding: 4px;
+    box-sizing: border-box;
     display: block;
   }
 

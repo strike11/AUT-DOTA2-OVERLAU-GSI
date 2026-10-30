@@ -28,7 +28,7 @@
     INVIS: "assets/alerts/invis.png",
     AEGIS: "assets/alerts/aegis.png",
     "AEGIS SNATCHED": "assets/alerts/aegis.png",
-    RUNE: "assets/alerts/haste.png",
+    RUNE: "assets/alerts/rune.png",
     WATER: "assets/alerts/water.png",
     SHIELD: "assets/alerts/shield.png",
   };
@@ -150,22 +150,14 @@
             class:shielding={fx.motion === "shield"}
           >
             <div class="fx">
-              {#each fx.bits as bit, i (i)}
-                <span
-                  class="bit"
-                  class:orbit={bit.anim === "orbit"}
-                  class:frame={bit.frame}
-                  style="--w:{bit.w}px;--h:{bit.h}px;--c:{bit.c};--x0:{bit.x0}px;--y0:{bit.y0}px;--dx:{bit.dx}px;--dy:{bit.dy}px;--rot:{bit.rot};--d:{bit.delay}ms;--r:{bit.r}px;--a0:{bit.a0};--a1:{bit.a1}"
-                ></span>
-              {/each}
               <div class="plate" style="--plate:{fx.plate};--edge:{fx.edge}"></div>
             </div>
-            <article class="card" class:dire={current.team === "dire"} class:radiant={current.team === "radiant"}>
+            <article class="card" style="--plate:{fx.plate};--fill:{fx.fill};--edge:{fx.edge}">
               <div class="art">
                 {#if icon && !failedIcon}
                   <img class="glyph" src={icon} alt="" on:error={() => (failedIcon = true)} />
                 {:else if current.hero && !failedHero}
-                  <img src="portraits/{current.hero}.png" alt="" on:error={() => (failedHero = true)} />
+                  <img class="glyph" src="icons/{current.hero}.png" alt="" on:error={() => (failedHero = true)} />
                 {:else}
                   <img class="shield" src="assets/uni/shield.png" alt="" />
                 {/if}
@@ -195,7 +187,7 @@
     height: 100vh;
     overflow: hidden;
     display: flex;
-    align-items: flex-start;
+    align-items: flex-end;
     justify-content: center;
     background: #00ff00;
   }
@@ -219,11 +211,12 @@
 
   .pop {
     position: absolute;
-    top: 150px;
+    bottom: 68px;
     left: 50%;
     width: 640px;
     height: 168px;
     margin-left: -320px;
+    animation: rise 0.5s steps(8, end) both;
   }
 
   .pop.leave {
@@ -248,31 +241,6 @@
     animation: plate-pop 0.28s steps(5, end) both;
   }
 
-  .bit {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    z-index: 1;
-    width: var(--w);
-    height: var(--h);
-    margin: 0;
-    padding: 0;
-    background: var(--c);
-    animation: fly 0.5s steps(6, end) both;
-    animation-delay: var(--d);
-  }
-
-  .bit.orbit {
-    animation-name: orbit;
-    animation-duration: 0.64s;
-  }
-
-  .bit.frame {
-    background: transparent;
-    border: 8px solid var(--c);
-    box-sizing: border-box;
-  }
-
   .card {
     position: relative;
     z-index: 3;
@@ -280,27 +248,18 @@
     height: 100%;
     display: flex;
     align-items: stretch;
-    background: #14081c;
-    border: 6px solid #ff4ad8;
+    background: var(--fill, #14081c);
+    border: 6px solid var(--edge, #ff4ad8);
     color: #fff6ff;
-    animation: slam 0.36s steps(6, end) both;
-  }
-
-  .card.radiant {
-    border-color: #3de4ff;
   }
 
   .art {
     width: 168px;
     flex: none;
-    background: #07030f;
-    border-right: 6px solid #ff4ad8;
+    background: var(--plate, #07030f);
+    border-right: 6px solid var(--edge, #ff4ad8);
     overflow: hidden;
     position: relative;
-  }
-
-  .radiant .art {
-    border-right-color: #3de4ff;
   }
 
   .art img {
@@ -317,8 +276,9 @@
   .glyph {
     object-fit: contain !important;
     object-position: center !important;
-    padding: 10px;
+    padding: 22px;
     box-sizing: border-box;
+    image-rendering: pixelated;
   }
 
   .shield {
@@ -357,11 +317,7 @@
 
   .copy span {
     font-size: 26px;
-    color: #ffd6f6;
-  }
-
-  .radiant .copy span {
-    color: #d9fbff;
+    color: var(--edge, #ffd6f6);
   }
 
   .copy small {
@@ -370,12 +326,12 @@
     color: #d7c4ef;
   }
 
-  @keyframes slam {
+  @keyframes rise {
     0% {
-      transform: translateY(-220px);
+      transform: translateY(340px);
     }
-    70% {
-      transform: translateY(10px);
+    75% {
+      transform: translateY(-14px);
     }
     100% {
       transform: translateY(0);
@@ -387,12 +343,12 @@
       transform: translateY(0);
     }
     100% {
-      transform: translateY(-460px);
+      transform: translateY(340px);
     }
   }
 
   @keyframes plate-pop {
-    0% { transform: scale(0.35); }
+    0% { transform: scale(0.12); }
     100% { transform: scale(1); }
   }
 
@@ -415,24 +371,6 @@
     0% { transform: translate(-24px, 6px); }
     45% { transform: translate(18px, -4px); }
     100% { transform: translate(0, 0); }
-  }
-
-  @keyframes fly {
-    0% {
-      transform: translate(-50%, -50%) translate(var(--x0), var(--y0)) rotate(var(--rot));
-    }
-    100% {
-      transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) rotate(var(--rot));
-    }
-  }
-
-  @keyframes orbit {
-    0% {
-      transform: translate(-50%, -50%) rotate(var(--a0)) scaleY(0.48) translateX(64px) scaleY(2.083) rotate(calc(var(--a0) * -1));
-    }
-    100% {
-      transform: translate(-50%, -50%) rotate(var(--a1)) scaleY(0.48) translateX(var(--r)) scaleY(2.083) rotate(calc(var(--a1) * -1));
-    }
   }
 
   .roshan .plate,

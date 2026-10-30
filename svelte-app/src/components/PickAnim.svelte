@@ -3,10 +3,7 @@
   export let nick = "";
   export let active = false;
 
-  let failed = false;
-
   $: label = hero ? hero.replace(/_/g, " ") : "";
-  $: if (hero) failed = false;
 
   const sparks = [0, 1, 2, 3];
 </script>
@@ -15,12 +12,7 @@
   {#if hero}
     {#key hero}
       <div class="clip">
-        {#if !failed}
-          <video class="media" autoplay muted loop playsinline on:error={() => (failed = true)}>
-            <source src="videos/npc_dota_hero_{hero}.webm" type="video/webm" />
-          </video>
-        {/if}
-        <img class="media still" src="portraits/{hero}.png" alt={nick || label} />
+        <img class="media still" src="icons/{hero}.png" alt={nick || label} />
         <div class="shade"></div>
         <div class="tag">
           {#if nick}<b>{nick}</b>{/if}
@@ -67,19 +59,17 @@
   .media {
     position: absolute;
     left: 50%;
-    top: 0;
-    height: 100% !important;
-    width: auto !important;
+    top: 42%;
+    width: 70% !important;
+    height: 70% !important;
     max-width: none !important;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
+    object-fit: contain !important;
+    image-rendering: pixelated;
     animation: rise 0.45s steps(6, end) both;
   }
 
   .media.still {
-    z-index: 0;
-  }
-
-  video.media {
     z-index: 1;
   }
 
